@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template
-from ..models import Event, User
-import pytz
+from ..models import Event
+from pytz import common_timezones
+import json
 
 event_bp = Blueprint("event_bp", __name__)
 
@@ -10,14 +11,10 @@ def event_home():
 
 @event_bp.route("/create")
 def create_event():
-    return render_template("/event/create.html", title = "Create Event", message = "Create Event", timezones = pytz.common_timezones)
-
-@event_bp.route("/<event_id>/members")
-def event_members(event_id):
-    event = Event.query.get(event_id)
-    if event:
-        return render_template("/event/members.html", title = "View Event", message = f"Event: {event_id}", participants = event.users)
+    return render_template("/event/create.html", title = "Create Event", message = "Create Event", timezones = common_timezones)
 
 @event_bp.route("/<event_id>")
 def event(event_id):
-    pass
+    event = Event.query.get(event_id)
+    if event:
+        return render_template("/event/event.html", availableDays = json.dumps(event.available_days), participants = event.participants)

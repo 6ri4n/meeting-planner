@@ -4,10 +4,10 @@
     <title>{{ title }}</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
+    <!-- <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
-    />
+    /> -->
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='create_event.css') }}"
@@ -65,12 +65,8 @@
         <header class="calendar-header">
           <p class="calendar-current-date"></p>
           <div class="calendar-navigation">
-            <span id="calendar-prev" class="material-symbols-rounded">
-              chevron_left
-            </span>
-            <span id="calendar-next" class="material-symbols-rounded">
-              chevron_right
-            </span>
+            <span id="calendar-prev" class="material-symbols-rounded"><</span>
+            <span id="calendar-next" class="material-symbols-rounded">></span>
           </div>
         </header>
 
@@ -178,12 +174,15 @@
           if (eventName.value === "")
             return alert("Event name cannot be empty.");
 
+          if (availableDays.length === 0)
+            return alert("Event days cannot be empty.");
+
           handleSendRequest();
         });
 
       async function handleSendRequest() {
         const formData = new FormData(event.target);
-        const payload = {};
+        const payload = { participants: {} };
         const url = "http://localhost:5000/api/event/create";
 
         formData.forEach((value, key) => {
@@ -191,7 +190,7 @@
         });
         payload["availableDays"] = availableDays;
 
-        console.log(payload);
+        // console.log(payload);
 
         try {
           const response = await fetch(url, {
@@ -202,29 +201,32 @@
             body: JSON.stringify(payload),
           });
 
-          // if (!response.ok) {
-          //   throw new Error(`HTTP error! Status: ${response.status}`);
-          // }
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
 
-          // const responseData = await response.json();
-          // console.log(responseData);
+          const responseData = await response.json();
+
+          if (responseData.redirect_url) {
+            window.location.href = responseData.redirect_url;
+          }
+
+          // set form data to default excluding timezone
+          // const startTime = document.getElementById("startTimeSelector");
+          // const endTime = document.getElementById("endTimeSelector");
+
+          // eventName.value = "New Event Name";
+          // startTime.selectedIndex = 0;
+          // endTime.selectedIndex = 0;
+          // availableDays = [];
+
+          // date = new Date();
+          // year = date.getFullYear();
+          // month = date.getMonth();
+          // manipulate();
+          // selectedLi();
         } catch (error) {
           console.error(error);
-        } finally {
-          // set form data to default excluding timezone
-          const startTime = document.getElementById("startTimeSelector");
-          const endTime = document.getElementById("endTimeSelector");
-
-          eventName.value = "New Event Name";
-          startTime.selectedIndex = 0;
-          endTime.selectedIndex = 0;
-          availableDays = [];
-
-          date = new Date();
-          year = date.getFullYear();
-          month = date.getMonth();
-          manipulate();
-          selectedLi();
         }
       }
       // Function to generate the calendar
@@ -285,12 +287,11 @@
         const liElements = document.querySelectorAll(".calendar-dates li");
         liElements.forEach((calendar_li) => {
           calendar_li.addEventListener("click", (event) => {
-            const selectedDate =
-              (month + 1).toString() +
-              "-" +
-              event.target.textContent +
-              "-" +
-              year;
+            const selectedDate = getDateInfo(
+              month + 1,
+              parseInt(event.target.textContent),
+              year
+            );
 
             if (
               !event.target.classList.contains("inactive") &&
@@ -301,15 +302,37 @@
 
               event.target.classList.add("calendar-selected");
               availableDays.push(selectedDate);
-              console.log(availableDays);
+              sortDates();
+              // console.log(availableDays);
             } else {
               event.target.classList.remove("calendar-selected");
               const removeSelectedDayIndex =
                 availableDays.indexOf(selectedDate);
               availableDays.splice(removeSelectedDayIndex, 1);
-              console.log(availableDays);
+              sortDates();
+              // console.log(availableDays);
             }
           });
+        });
+      }
+
+      function getDateInfo(month, day, year) {
+        const date = new Date(year, month - 1, day);
+        const dayLong = date.toLocaleDateString("en-US", { weekday: "long" });
+        const monthLong = date.toLocaleDateString("en-US", { month: "long" });
+        return { month, day, dayLong, monthLong, year };
+      }
+
+      function sortDates() {
+        availableDays.sort((a, b) => {
+          // Compare year first
+          if (a.year !== b.year) return a.year - b.year;
+
+          // Compare month if years are the same
+          if (a.month !== b.month) return a.month - b.month;
+
+          // Compare day if both years and months are the same
+          return a.day - b.day;
         });
       }
     </script>
