@@ -1,0 +1,74 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  outline: none;
+}
+
+button:focus {
+  outline: none;
+}
+
+ul {
+  list-style: none;
+  flex-wrap: wrap;
+  display: flex;
+  text-align: center;
+}
+
+.calendar {
+  width: 50%;
+}
+
+.month, .calendar header {
+  width: 100%;
+}
+
+.day li,
+.week li {
+  width: calc(100% / 7);
+}
+
+.day li.not-current-month {
+  color: pink;
+}
+
+.day li.current-month {
+  color: purple;
+}
+
+.day li.selected-day {
+  font-weight: bold;
+}
+
+.day li:not(.not-current-month):hover {
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.calendar header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.calendar-nav {
+  display: flex;
+}
+
+.calendar-nav button {
+  padding: 0.5rem;
+  border: solid black 1px;
+  border-radius: 8px;
+  margin: 0 0 0 10px;
+}
+
+header h1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
