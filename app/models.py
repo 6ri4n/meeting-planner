@@ -1,14 +1,11 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.dialects.postgresql import JSON
 
 db = SQLAlchemy()
 
-
-class Events(db.Model):
-    user_id = db.Column(db.Integer, primary_key = True)
-    username = db.Column(db.String(80), nullable = False)
-    password = db.Column(db.String(120), nullable = False)
-
-    event_id = db.Column(db.Integer, nullable = False)
-    event_creator = db.Column(db.Boolean, nullable = False)
-    available_days = db.Column(db.String(255), nullable = False)  # Comma-separated string of dates
-    time_range = db.Column(db.String(255), nullable = False)  # Comma-separated string of start and end times (UTC)
+class Event(db.Model):
+    _id = db.Column(db.String(255), primary_key = True, autoincrement = False, nullable = False)
+    event_name = db.Column(db.String(255), nullable = False)
+    created_at = db.Column(db.String(255), nullable = False)
+    meeting = db.Column(JSON, nullable = False)
+    participants = db.Column(JSON, nullable = False)

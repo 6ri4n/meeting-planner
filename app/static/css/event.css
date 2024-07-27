@@ -1,0 +1,77 @@
+.month-day-container {
+  display: flex;
+}
+
+.month-day {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 60px;
+  height: 40px;
+}
+
+.select-time-container {
+  display: flex;
+}
+
+.select-time {
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+  width: 59px;
+  height: 39px;
+}
+
+.display-participants {
+  display: flex;
+  flex-direction: column;
+}
+
+.participants-status {
+  display: flex;
+}
+
+.participants-available {
+  margin: 1rem;
+}
+
+.participants-unavailable {
+  margin: 1rem;
+}
+
+.hide-display-participants {
+  display: none;
+}
+
+.main-content {
+  display: flex;
+}
+
+.available-times-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.available-times-container div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60px;
+  height: 40px;
+}
+
+.times-container {
+  display: flex;
+  /* flex-direction: column-reverse; */
+}
+
+.times-filler {
+  width: 62px;
+  height: 42px;
+}
+
+.available-days-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
