@@ -30,13 +30,13 @@ def create_event():
 
             return jsonify({"redirect_url": redirect_url})
         except Exception as err:
-            return jsonify({"error": "Server Error."}), 500
+            return jsonify({"error": "Server Error. Please Try Again."}), 500
     else:
         return jsonify({"error": "Invalid Data."}), 400
     
 def generate_base64_uuid():
     u = uuid.uuid4()
-    b64 = base64.urlsafe_b64encode(u.bytes).rstrip(b'=')
+    b64 = base64.urlsafe_b64encode(u.bytes[:8]).rstrip(b'=')
     return b64.decode('utf-8')
 
 def convert_to_utc(time_str, timezone):
