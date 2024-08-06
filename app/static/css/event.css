@@ -1,77 +1,59 @@
-.month-day-container {
+* {
+  margin: 0;
+}
+
+#display-participants div,
+#main-content,
+#time-container,
+#view-main-content,
+#available-days,
+.available-day,
+#display-times,
+#display-times div,
+.available-time-col,
+#available-times {
   display: flex;
 }
 
-.month-day {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+.filler,
+.available-day,
+#display-times div {
   width: 60px;
   height: 40px;
 }
 
-.select-time-container {
-  display: flex;
+#available-times,
+#display-times,
+.available-time-col {
+  width: fit-content;
 }
 
-.select-time {
+#available,
+#unavailable,
+#view-main-content,
+.available-day,
+#display-times,
+.available-time-col {
+  flex-direction: column;
+}
+
+#display-times div,
+.available-day {
+  justify-content: center;
+  align-items: center;
+}
+
+.available-time {
   border-right: 1px solid black;
   border-bottom: 1px solid black;
   width: 59px;
   height: 39px;
 }
 
-.display-participants {
-  display: flex;
-  flex-direction: column;
-}
-
-.participants-status {
-  display: flex;
-}
-
-.participants-available {
-  margin: 1rem;
-}
-
-.participants-unavailable {
-  margin: 1rem;
-}
-
 .hide-display-participants {
   display: none;
 }
 
-.main-content {
-  display: flex;
-}
-
-.available-times-container {
-  display: flex;
-  flex-direction: column;
-}
-
-.available-times-container div {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 60px;
-  height: 40px;
-}
-
-.times-container {
-  display: flex;
-  /* flex-direction: column-reverse; */
-}
-
-.times-filler {
-  width: 62px;
-  height: 42px;
-}
-
-.available-days-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.highlight-time {
+  background-color: green;
 }
