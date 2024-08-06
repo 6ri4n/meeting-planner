@@ -62,14 +62,14 @@ function handleCalendar() {
       }
 
       day.addEventListener("click", (event) => {
-        if (event.target.classList.contains("selected-day")) {
-          event.target.classList.remove("selected-day");
-          delete selectedDays[formatKey];
-        } else {
-          if (selectedDays.length === maxSelections)
+        if (event.target.classList.toggle("selected-day")) {
+          if (Object.keys(selectedDays).length === maxSelections) {
+            event.target.classList.remove("selected-day");
             return alert("You can only select up to 14 days.");
-          event.target.classList.add("selected-day");
+          }
           selectedDays[formatKey] = formatValue;
+        } else {
+          delete selectedDays[formatKey];
         }
       });
 
