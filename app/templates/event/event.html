@@ -1,194 +1,66 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Test Event JSON Data</title>
+    <title>Event View</title>
     <link
       rel="stylesheet"
-      href="{{ url_for('static', filename='event.css') }}"
+      href="{{ url_for('static', filename='css/event.css') }}"
     />
   </head>
   <body>
-    <h1>Testing Event JSON Data</h1>
+    <h1>Event View</h1>
+    <div>Participants: {{ participants }}</div>
 
-    <section class="main-content">
-      <div class="times-container">
-        <div id="available-times-container" class="available-times-container">
-          <div class="times-filler"></div>
+    <section id="main-content">
+      <form id="signin" action="submit" method="post">
+        <label for="username">Sign In</label>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          placeholder="username"
+        />
+        <button>Sign In</button>
+        <p>Username is only for this event.</p>
+        <p>Returning? Use the same username.</p>
+      </form>
+
+      <section id="view-main-content">
+        <div id="available-days">
+          <div class="filler"></div>
         </div>
-      </div>
-      <div id="available-days-container">
-        <div id="month-day-container" class="month-day-container"></div>
-        <div id="select-time-container" class="select-time-container"></div>
+        <div id="time-container">
+          <div id="display-times"></div>
+          <div id="available-times"></div>
+        </div>
+      </section>
+    </section>
+
+    <section id="display-participants">
+      <h1>1/1 Available</h1>
+      <p>Mon 04 Aug 2024</p>
+      <div>
+        <div id="available">
+          <div>👍 available</div>
+          <div>user1</div>
+        </div>
+        <div id="unavailable">
+          <div>👎 unavailable</div>
+          <div>user2</div>
+          <div>user3</div>
+        </div>
       </div>
     </section>
 
-    <div>{{ participants }}</div>
-
-    <section id="display-participants" class="display-participants"></section>
-
-    <script type="application/json" id="available-days">
-      {{ availableDays|safe }}
+    <script type="application/json" id="meeting">
+      {{ meeting|safe }}
     </script>
-
     <script type="application/json" id="participants">
       {{ participants|safe }}
     </script>
-
-    <script>
-      const participantsElement = document.getElementById("participants");
-      const participants = JSON.parse(participantsElement.textContent);
-      const availableDaysElement = document.getElementById("available-days");
-      const availableDays = JSON.parse(availableDaysElement.textContent);
-      const monthDayContainer = document.getElementById("month-day-container");
-      const selectTimeContainer = document.getElementById(
-        "select-time-container"
-      );
-      const availableTimesContainer = document.getElementById(
-        "available-times-container"
-      );
-      const displayParticipants = document.getElementById(
-        "display-participants"
-      );
-
-      const availableTimeList = [];
-
-      for (const time of availableDays[0].availableTimes) {
-        for (const key in time) {
-          availableTimeList.push(key);
-          const availableTime = document.createElement("div");
-          availableTime.id = availableTime.textContent = key;
-          availableTimesContainer.appendChild(availableTime);
-        }
-      }
-
-      for (const day of availableDays) {
-        const monthDay = document.createElement("div");
-        monthDay.textContent = `${day.monthLong.substring(0, 3)} ${day.day}`;
-        monthDay.className = "month-day";
-
-        const monthDayChild = document.createElement("div");
-        monthDayChild.textContent = `${day.dayLong.substring(0, 3)}`;
-        monthDay.appendChild(monthDayChild);
-
-        monthDayContainer.appendChild(monthDay);
-
-        const selectTimeDay = document.createElement("div");
-        for (const time of availableTimeList) {
-          const selectTime = document.createElement("div");
-          selectTime.id = `${day.month}#${day.day}#${day.year}#${time}`;
-          selectTime.className = "select-time";
-          selectTimeDay.appendChild(selectTime);
-        }
-        selectTimeContainer.appendChild(selectTimeDay);
-      }
-
-      createDisplayParticipants();
-
-      document.querySelectorAll(".select-time").forEach((selectTime) => {
-        selectTime.addEventListener("mouseenter", (event) => {
-          const [month, day, year, time] = event.target.id.split("#");
-          let timeObj = "";
-          const result = availableDays.find((dayObj) => {
-            if (
-              dayObj.month === parseInt(month) &&
-              dayObj.day === parseInt(day) &&
-              dayObj.year === parseInt(year)
-            ) {
-              for (const obj of dayObj.availableTimes) {
-                for (const key in obj) {
-                  if (key === time) {
-                    timeObj = obj;
-                  }
-                }
-              }
-              return dayObj;
-            }
-          });
-
-          handleUpdateParticipantsInfo(result, timeObj, time);
-          displayParticipants.classList.remove("hide-display-participants");
-        });
-      });
-
-      document.querySelectorAll(".select-time").forEach((selectTime) => {
-        selectTime.addEventListener("mouseleave", (event) => {
-          handleRemoveParticipantsInfo();
-        });
-      });
-
-      function handleUpdateParticipantsInfo(dayObj, timeObj, time) {
-        const participantsTotal = document.querySelector(".participants-total");
-        const participantsDate = document.querySelector(".participants-date");
-        const participantsAvailable = document.querySelector(
-          ".participants-available"
-        );
-        const participantsUnavailable = document.querySelector(
-          ".participants-unavailable"
-        );
-
-        participantsTotal.textContent = `?/${
-          Object.keys(participants).length
-        } Available`;
-        participantsDate.textContent = `${dayObj.dayLong.substring(0, 3)} ${
-          dayObj.day
-        } ${dayObj.monthLong.substring(0, 3)} ${dayObj.year} ${time}`;
-
-        const availableTitle = document.createElement("div");
-        availableTitle.textContent = "Available";
-        participantsAvailable.appendChild(availableTitle);
-        for (const user of timeObj[time].available) {
-          const username = document.createElement("div");
-          username.textContent = user;
-          username.className = "participants-user";
-          participantsAvailable.appendChild(username);
-        }
-
-        const unavailableTitle = document.createElement("div");
-        unavailableTitle.textContent = "Unavailable";
-        participantsUnavailable.appendChild(unavailableTitle);
-        for (const user of timeObj[time].unavailable) {
-          const username = document.createElement("div");
-          username.textContent = user;
-          username.className = "participants-user";
-          participantsUnavailable.appendChild(username);
-        }
-      }
-
-      function handleRemoveParticipantsInfo() {
-        const displayParticipants = document.querySelector(
-          ".display-participants"
-        );
-        const participantsAvailable = document.querySelector(
-          ".participants-available"
-        );
-        const participantsUnavailable = document.querySelector(
-          ".participants-unavailable"
-        );
-
-        displayParticipants.classList.add("hide-display-participants");
-        participantsAvailable.replaceChildren();
-        participantsUnavailable.replaceChildren();
-      }
-
-      function createDisplayParticipants() {
-        const participantsTotal = document.createElement("div");
-        const participantsDate = document.createElement("div");
-        const participantsStatus = document.createElement("div");
-        const participantsAvailable = document.createElement("div");
-        const participantsUnavailable = document.createElement("div");
-
-        participantsStatus.className = "participants-status";
-        participantsTotal.className = "participants-total";
-        participantsDate.className = "participants-date";
-        participantsAvailable.className = "participants-available";
-        participantsUnavailable.className = "participants-unavailable";
-
-        participantsStatus.appendChild(participantsAvailable);
-        participantsStatus.appendChild(participantsUnavailable);
-        displayParticipants.appendChild(participantsTotal);
-        displayParticipants.appendChild(participantsDate);
-        displayParticipants.appendChild(participantsStatus);
-      }
-    </script>
+    <script
+      defer
+      src="{{ url_for('static', filename='js/event.js') }}"
+    ></script>
   </body>
 </html>
