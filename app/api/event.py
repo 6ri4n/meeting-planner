@@ -1,13 +1,16 @@
-from flask import Blueprint, request, jsonify
-import uuid
 import base64
-from datetime import datetime, date
-import pytz
+import uuid
+from datetime import date, datetime
+
+from pytz import timezone as pytimezone, utc
+from flask import Blueprint, jsonify, request
+
 from ..models import Event, db
 
 api_event_bp = Blueprint("api_event_bp", __name__)
 
-@api_event_bp.route("/create", methods = ["POST"])
+
+@api_event_bp.route("/create", methods=["POST"])
 def create_event():
     data = request.json
     if data:
@@ -18,11 +21,11 @@ def create_event():
             available_times = generate_utc_time_range(start_time_utc, end_time_utc)
 
             new_event = Event(
-                _id = redirect_url, 
-                event_name = data["eventName"], 
-                created_at = date.today().strftime("%m-%d-%Y"),
-                meeting = {"days": data["selectedDays"], "times": available_times},
-                participants = {}
+                _id=redirect_url,
+                event_name=data["eventName"],
+                created_at=date.today().strftime("%m-%d-%Y"),
+                meeting={"days": data["selectedDays"], "times": available_times},
+                participants={},
             )
 
             db.session.add(new_event)
@@ -30,35 +33,38 @@ def create_event():
 
             return jsonify({"redirect_url": redirect_url})
         except Exception as err:
-            return jsonify({"error": "Server Error."}), 500
+            return jsonify({"error": "Server Error. Please Try Again."}), 500
     else:
         return jsonify({"error": "Invalid Data."}), 400
-    
+
+
 def generate_base64_uuid():
     u = uuid.uuid4()
-    b64 = base64.urlsafe_b64encode(u.bytes).rstrip(b'=')
-    return b64.decode('utf-8')
+    b64 = base64.urlsafe_b64encode(u.bytes[:8]).rstrip(b"=")
+    return b64.decode("utf-8")
+
 
 def convert_to_utc(time_str, timezone):
     # Parse the input time string to a naive datetime.time object
-    naive_time = datetime.strptime(time_str, '%I:%M %p').time()
-    
+    naive_time = datetime.strptime(time_str, "%I:%M %p").time()
+
     # Combine with a date to create a naive datetime object
     naive_datetime = datetime.combine(datetime.today(), naive_time)
-    
+
     # Get the timezone object for the given timezone
-    tz = pytz.timezone(timezone)
-    
+    tz = pytimezone(timezone)
+
     # Localize the naive datetime object with the given timezone
     localized_datetime = tz.localize(naive_datetime, is_dst=None)
-    
+
     # Convert localized datetime to UTC
-    utc_datetime = localized_datetime.astimezone(pytz.utc)
-    
+    utc_datetime = localized_datetime.astimezone(utc)
+
     # Format UTC datetime as string
-    utc_time_str = utc_datetime.strftime('%H:%M')
-    
+    utc_time_str = utc_datetime.strftime("%H:%M")
+
     return utc_time_str
+
 
 def generate_utc_time_range(start_time_utc, end_time_utc):
     start_hour = int(start_time_utc[:2])

@@ -1,10 +1,7 @@
 const selectedDays = {};
-
-document.addEventListener("DOMContentLoaded", () => {
-  setTimezone();
-  handleCalendar();
-  handleFormSubmit();
-});
+setTimezone();
+handleCalendar();
+handleFormSubmit();
 
 function handleCalendar() {
   const longMonth = {
@@ -64,22 +61,16 @@ function handleCalendar() {
         day.classList.add("selected-day");
       }
 
-      day.addEventListener("click", (e) => {
-        if (e.target.classList.contains("selected-day")) {
-          e.target.classList.remove("selected-day");
-
-          delete selectedDays[formatKey];
-          // const removeSelectedDayIndex = selectedDays.indexOf(selectedDate);
-          // selectedDays.splice(removeSelectedDayIndex, 1);
-        } else {
-          if (selectedDays.length === maxSelections)
+      day.addEventListener("click", (event) => {
+        if (event.target.classList.toggle("selected-day")) {
+          if (Object.keys(selectedDays).length === maxSelections) {
+            event.target.classList.remove("selected-day");
             return alert("You can only select up to 14 days.");
-          e.target.classList.add("selected-day");
-          // selectedDays.push(selectedDate);
+          }
           selectedDays[formatKey] = formatValue;
+        } else {
+          delete selectedDays[formatKey];
         }
-
-        // console.log(selectedDays);
       });
 
       dayParentElement.appendChild(day);
@@ -146,52 +137,51 @@ function handleFormSubmit() {
     if (eventName.value === "") return alert("Event name cannot be empty.");
     if (Object.entries(selectedDays).length === 0)
       return alert("Event days cannot be empty.");
-    handleSendRequest(event);
+    handleRequest(event);
   });
+}
 
-  async function handleSendRequest(event) {
-    const URL = "http://localhost:5000/api/event/create";
-    const formData = new FormData(event.target);
-    const sortedSelectedDays = sortDates();
-    const formObj = {};
+async function handleRequest(event) {
+  const URL = "http://localhost:5000/api/event/create";
+  const formData = new FormData(event.target);
+  const sortedSelectedDays = sortDates();
+  const formObj = {};
 
-    formData.forEach((value, key) => {
-      formObj[key] = value;
+  formData.forEach((value, key) => {
+    formObj[key] = value;
+  });
+  formObj["selectedDays"] = sortedSelectedDays;
+
+  try {
+    const response = await fetch(URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formObj),
     });
-    formObj["selectedDays"] = sortedSelectedDays;
 
-    try {
-      const response = await fetch(URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formObj),
-      });
+    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
-      if (!response.ok)
-        throw new Error(`HTTP error! Status: ${response.status}`);
+    const responseData = await response.json();
 
-      const responseData = await response.json();
-
-      if (responseData.redirect_url)
-        window.location.href = responseData.redirect_url;
-    } catch (error) {
-      console.error(error);
-    }
+    if (responseData.redirect_url)
+      window.location.href = responseData.redirect_url;
+  } catch (error) {
+    console.error(error);
   }
+}
 
-  function sortDates() {
-    const sortedSelectedDays = Object.entries(selectedDays);
-    sortedSelectedDays.sort((a, b) => {
-      const dateA = a[1];
-      const dateB = b[1];
-      if (dateA.year !== dateB.year) return dateA.year - dateB.year;
-      if (dateA.month !== dateB.month) return dateA.month - dateB.month;
-      return dateA.day - dateB.day;
-    });
-    return Object.fromEntries(sortedSelectedDays);
-  }
+function sortDates() {
+  const sortedSelectedDays = Object.entries(selectedDays);
+  sortedSelectedDays.sort((a, b) => {
+    const dateA = a[1];
+    const dateB = b[1];
+    if (dateA.year !== dateB.year) return dateA.year - dateB.year;
+    if (dateA.month !== dateB.month) return dateA.month - dateB.month;
+    return dateA.day - dateB.day;
+  });
+  return Object.fromEntries(sortedSelectedDays);
 }
 
 function setTimezone() {
