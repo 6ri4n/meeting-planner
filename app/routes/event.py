@@ -1,7 +1,9 @@
-from flask import Blueprint, render_template
-from ..models import Event
-from ..config import time_format, common_timezones
 import json
+
+from flask import Blueprint, render_template
+
+from ..config import common_timezones, time_format
+from ..models import Event
 
 event_bp = Blueprint("event_bp", __name__)
 
