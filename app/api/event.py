@@ -1,4 +1,5 @@
 import base64
+import json
 import uuid
 from datetime import date, datetime
 
@@ -36,6 +37,104 @@ def create_event():
             return jsonify({"error": "Server Error. Please Try Again."}), 500
     else:
         return jsonify({"error": "Invalid Data."}), 400
+
+
+@api_event_bp.route("/signin", methods=["POST"])
+def signin():
+    data = request.json
+    if not data or not data.get("username") or not data.get("eventId"):
+        return jsonify({"error": "Invalid Data."}), 400
+
+    try:
+        username = data["username"]
+        event_id = data["eventId"]
+
+        # Find the event by ID
+        event = Event.query.get(event_id)
+        if not event:
+            return jsonify({"error": "Event not found."}), 404
+
+        # Handles participants data
+        if isinstance(event.participants, str):
+            update_participants = json.loads(event.participants)
+        else:
+            update_participants = event.participants
+
+        # Checks if the user already exists
+        if username in update_participants:
+            return (
+                jsonify({"message": "User already exists."}),
+                200,
+            )  # 200 OK for idempotency
+
+        # Add the new user
+        update_participants[username] = {}
+        event.participants = json.dumps(update_participants)
+        db.session.commit()
+
+        return jsonify({"username": username}), 201  # 201 Created for new user
+
+    except Exception as err:
+        print(f"Error: {err}")
+        return jsonify({"error": "Server Error."}), 500  # 500 Internal Server Error
+
+
+@api_event_bp.route("/update", methods=["POST"])
+def update():
+    data = request.json
+    if (
+        not data
+        or not data.get("username")
+        or not data.get("eventId")
+        or not data.get("selectedTimes")
+    ):
+        return jsonify({"error": "Invalid Data."}), 400
+
+    try:
+        username = data["username"]
+        event_id = data["eventId"]
+        selected_times = data["selectedTimes"]
+
+        # Finds the event by ID
+        event = Event.query.get(event_id)
+        if not event:
+            return jsonify({"error": "Event not found."}), 404
+
+        # Handles participants data
+        if isinstance(event.participants, str):
+            update_participants = json.loads(event.participants)
+        else:
+            update_participants = event.participants
+
+        # Checks if the user is part of the event's participants
+        if username not in update_participants:
+            return jsonify({"error": "User not found in this event."}), 404
+
+        # Update the user's data with the new selected times (overwrite old data)
+        update_participants[username] = selected_times
+
+        # Convert Dict to JSON string and commit
+        event.participants = json.dumps(update_participants)
+        db.session.commit()
+
+        # Return 204 No Content if update was successful with no content to return
+        return "", 204
+
+    except Exception as err:
+        print(f"Error: {err}")
+        return jsonify({"error": "Server Error."}), 500  # 500 Internal Server Error
+
+
+@api_event_bp.route("/users", methods=["POST"])
+def users():
+    data = request.json
+    event_id = data.get("eventId")
+    event = Event.query.get(event_id)
+    # convert JSON string to Dict
+    # users = json.loads(event.participants)
+    # display list of usernames
+    users = list(json.loads(event.participants).keys())
+    return jsonify({"test": users}), 200
 
 
 def generate_base64_uuid():

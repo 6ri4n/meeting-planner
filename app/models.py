@@ -11,4 +11,4 @@ class Event(db.Model):
     event_name = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.String(255), nullable=False)
     meeting = db.Column(JSON, nullable=False)
-    participants = db.Column(JSON, nullable=False)
+    participants = db.Column(JSON, default={}, nullable=False)
