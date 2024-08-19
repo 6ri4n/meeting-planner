@@ -227,7 +227,7 @@ function handleHighlight() {
 
 async function handleUpdateReq() {
   try {
-    const response = await handleRequest("/event/updat", {
+    const response = await handleRequest("/event/update", {
       username: user,
       eventId: eventId,
       selectedTimes: participants[user],
