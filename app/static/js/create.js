@@ -1,7 +1,10 @@
 const selectedDays = {};
-setTimezone();
-handleCalendar();
-handleFormSubmit();
+
+window.onload = function () {
+  setTimezone();
+  handleCalendar();
+  handleFormSubmit();
+};
 
 function handleCalendar() {
   const longMonth = {
