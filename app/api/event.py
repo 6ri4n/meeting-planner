@@ -60,23 +60,25 @@ def signin():
         else:
             update_participants = event.participants
 
-        # Checks if the user already exists
+        # Check if the user already exists
         if username in update_participants:
             return (
-                jsonify({"message": "User already exists."}),
+                jsonify({"username": username}),
                 200,
-            )  # 200 OK for idempotency
+            )  # Return 200 OK for existing user
 
         # Add the new user
         update_participants[username] = {}
         event.participants = json.dumps(update_participants)
         db.session.commit()
 
-        return jsonify({"username": username}), 201  # 201 Created for new user
+        return jsonify({"username": username}), 201  # Return 201 Created for new user
 
     except Exception as err:
-        print(f"Error: {err}")
-        return jsonify({"error": "Server Error."}), 500  # 500 Internal Server Error
+        return (
+            jsonify({"error": "Server Error.", "details": str(err)}),
+            500,
+        )  # Return error with details
 
 
 @api_event_bp.route("/update", methods=["POST"])
@@ -121,20 +123,10 @@ def update():
         return "", 204
 
     except Exception as err:
-        print(f"Error: {err}")
-        return jsonify({"error": "Server Error."}), 500  # 500 Internal Server Error
-
-
-@api_event_bp.route("/users", methods=["POST"])
-def users():
-    data = request.json
-    event_id = data.get("eventId")
-    event = Event.query.get(event_id)
-    # convert JSON string to Dict
-    # users = json.loads(event.participants)
-    # display list of usernames
-    users = list(json.loads(event.participants).keys())
-    return jsonify({"test": users}), 200
+        return (
+            jsonify({"error": "Server Error.", "details": str(err)}),
+            500,
+        )  # Return error with details
 
 
 def generate_base64_uuid():
