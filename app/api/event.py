@@ -48,6 +48,7 @@ def signin():
     try:
         username = data["username"]
         event_id = data["eventId"]
+
         # Find the event by ID
         event = Event.query.get(event_id)
         if not event:
@@ -59,13 +60,19 @@ def signin():
         else:
             update_participants = event.participants
 
-        # Add the user if they do not exist
-        if username not in update_participants:
-            update_participants[username] = {}
-            event.participants = json.dumps(update_participants)
-            db.session.commit()
+        # Check if the user already exists
+        if username in update_participants:
+            return (
+                jsonify({"username": username}),
+                200,
+            )  # Return 200 OK for existing user
 
-        return jsonify({"username": username}), 200  # Return the username regardless
+        # Add the new user
+        update_participants[username] = {}
+        event.participants = json.dumps(update_participants)
+        db.session.commit()
+
+        return jsonify({"username": username}), 201  # Return 201 Created for new user
 
     except Exception as err:
         return (
@@ -116,8 +123,10 @@ def update():
         return "", 204
 
     except Exception as err:
-        print(f"Error: {err}")
-        return jsonify({"error": "Server Error."}), 500  # 500 Internal Server Error
+        return (
+            jsonify({"error": "Server Error.", "details": str(err)}),
+            500,
+        )  # Return error with details
 
 
 def generate_base64_uuid():
