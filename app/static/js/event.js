@@ -4,12 +4,14 @@ const participantsElement = document.getElementById("participants");
 const participants = JSON.parse(participantsElement.textContent);
 const renderGrid = handleGrid();
 const { select, setSelection } = selectionState();
+const eventId = window.location.pathname.substring(1);
+const debouncedHandleUpdateReq = debounce(handleUpdateReq, 3000);
 let user = undefined;
 
-document.addEventListener("DOMContentLoaded", () => {
+window.onload = function () {
   renderGrid("view-main-content");
   handleSignIn();
-});
+};
 
 function handleGrid() {
   return renderGrid;
@@ -40,8 +42,8 @@ function handleGrid() {
       container.className = "available-time-col";
       for (const [rowIndex, _] of meeting.times.entries()) {
         const availableTime = document.createElement("div");
-        const col = colIndex + 1;
-        const row = rowIndex + 1;
+        const col = (colIndex + 1).toString();
+        const row = (rowIndex + 1).toString();
         availableTime.id = dateKey;
         availableTime.className = "available-time";
         availableTime.setAttribute("data-col", col);
@@ -70,23 +72,21 @@ function handleSignIn() {
       const username = document.getElementById("username");
       if (username.value === "") return alert("Username cannot be empty.");
 
-      // TODO: send request and validate
-      // const response = handleRequest("/event/signin", {
-      //   username: username.value,
-      // });
+      let response = await handleRequest("/event/signin", {
+        eventId,
+        eventId,
+        username: username.value,
+      });
 
-      // if (response.username) {
-      // }
+      if (!response.ok) return;
+      response = await response.json();
+      if (response.status === 201) participants[username] = {};
+      user = response.username;
 
-      user = username.value;
-
-      if (user) {
-        participants[user] = {};
-        document.getElementById("signin").remove();
-        renderEditHTML();
-        renderGrid("edit-main-content");
-        setupListeners("#edit-main-content", handleDragSelection());
-      }
+      document.getElementById("signin").remove();
+      renderEditHTML();
+      renderGrid("edit-main-content");
+      setupListeners("#edit-main-content", handleDragSelection());
     });
 
   function handleDragSelection() {
@@ -103,6 +103,7 @@ function handleSignIn() {
         const col = event.target.getAttribute("data-col");
         setSelection("up", element, col, row);
         handleHighlight();
+        debouncedHandleUpdateReq();
       },
     };
   }
@@ -143,12 +144,8 @@ async function handleRequest(URL, payload) {
       },
       body: JSON.stringify(payload),
     });
-
     if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-
-    const responseData = await response.json();
-
-    return responseData;
+    return response;
   } catch (error) {
     console.error(error);
   }
@@ -179,9 +176,8 @@ function selectionState() {
 }
 
 function initHighlight(element, col, row) {
+  if (!participants[user]) return element;
   if (!participants[user][element.id]) return element;
-  if (!participants[user][element.id].length) return element;
-
   for (const time of participants[user][element.id]) {
     if (time.col === col && time.row === row) {
       element.classList.add("highlight-time");
@@ -208,12 +204,13 @@ function handleHighlight() {
     const start = startRowIndex + startRow - 1;
     const end = startRowIndex + endRow - 1;
     for (let row = start; row <= end; row++) {
-      updateUserData(isHighlight, times[row], col, row);
-      console.log(participants);
+      updateUserData(isHighlight, times[row]);
     }
   }
 
-  function updateUserData(isHighlight, element, col, row) {
+  function updateUserData(isHighlight, element) {
+    const row = element.getAttribute("data-row");
+    const col = element.getAttribute("data-col");
     if (isHighlight) {
       element.classList.remove("highlight-time");
       const updatedArr = participants[user][element.id].filter((time) => {
@@ -222,11 +219,40 @@ function handleHighlight() {
       participants[user][element.id] = updatedArr;
     } else {
       element.classList.add("highlight-time");
-      if (participants[user][element.id]) {
-        participants[user][element.id].push({ col, row });
-      } else {
-        participants[user][element.id] = [{ col, row }];
-      }
+      if (!participants[user][element.id]) participants[user][element.id] = [];
+      participants[user][element.id].push({ col, row });
     }
   }
+}
+
+async function handleUpdateReq() {
+  try {
+    const response = await handleRequest("/event/updat", {
+      username: user,
+      eventId: eventId,
+      selectedTimes: participants[user],
+    });
+
+    if (!response.ok) {
+      alert("Server Error, Reloading Page.");
+      window.location.reload();
+    }
+  } catch (error) {
+    console.error(error);
+    alert("Server Error, Reloading Page.");
+    window.location.reload();
+  }
+
+  console.log("sent request");
+}
+
+function debounce(cb, delay) {
+  let timeout;
+
+  return (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      cb(...args);
+    }, delay);
+  };
 }
