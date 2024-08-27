@@ -79,9 +79,11 @@ function handleSignIn() {
       });
 
       if (!response.ok) return;
-      response = await response.json();
-      if (response.status === 201) participants[username] = {};
-      user = response.username;
+
+      user = username.value;
+      if (response.status === 201) {
+        participants[user] = {};
+      }
 
       document.getElementById("signin").remove();
       renderEditHTML();
@@ -176,8 +178,8 @@ function selectionState() {
 }
 
 function initHighlight(element, col, row) {
-  if (!participants[user]) return element;
   if (!participants[user][element.id]) return element;
+  if (!participants[user][element.id].length) return element;
   for (const time of participants[user][element.id]) {
     if (time.col === col && time.row === row) {
       element.classList.add("highlight-time");
@@ -213,14 +215,17 @@ function handleHighlight() {
     const col = element.getAttribute("data-col");
     if (isHighlight) {
       element.classList.remove("highlight-time");
-      const updatedArr = participants[user][element.id].filter((time) => {
-        return time.col !== col && time.row !== row;
-      });
+      const updatedArr = participants[user][element.id].filter(
+        (time) => time.col !== col || time.row !== row
+      );
       participants[user][element.id] = updatedArr;
     } else {
       element.classList.add("highlight-time");
-      if (!participants[user][element.id]) participants[user][element.id] = [];
-      participants[user][element.id].push({ col, row });
+      if (participants[user][element.id]) {
+        participants[user][element.id].push({ col, row });
+      } else {
+        participants[user][element.id] = [{ col, row }];
+      }
     }
   }
 }
@@ -242,8 +247,6 @@ async function handleUpdateReq() {
     alert("Server Error, Reloading Page.");
     window.location.reload();
   }
-
-  console.log("sent request");
 }
 
 function debounce(cb, delay) {

@@ -60,25 +60,21 @@ def signin():
         else:
             update_participants = event.participants
 
-        # Check if the user already exists
+        # Return 200 OK for existing user
         if username in update_participants:
-            return (
-                jsonify({"username": username}),
-                200,
-            )  # Return 200 OK for existing user
+            return "", 200
 
         # Add the new user
         update_participants[username] = {}
         event.participants = json.dumps(update_participants)
         db.session.commit()
 
-        return jsonify({"username": username}), 201  # Return 201 Created for new user
+        # Return 201 Created for new user
+        return "", 201
 
     except Exception as err:
-        return (
-            jsonify({"error": "Server Error.", "details": str(err)}),
-            500,
-        )  # Return error with details
+        # Return error with details
+        return jsonify({"error": "Server Error.", "details": str(err)}), 500
 
 
 @api_event_bp.route("/update", methods=["POST"])
@@ -123,10 +119,8 @@ def update():
         return "", 204
 
     except Exception as err:
-        return (
-            jsonify({"error": "Server Error.", "details": str(err)}),
-            500,
-        )  # Return error with details
+        # Return error with details
+        return jsonify({"error": "Server Error.", "details": str(err)}), 500
 
 
 def generate_base64_uuid():
