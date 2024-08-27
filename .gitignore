@@ -22,6 +22,7 @@ __pycache__
 
 #environment variables
 .env
+.flaskenv
 
 # Installer logs
 pip-log.txt
