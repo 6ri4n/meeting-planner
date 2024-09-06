@@ -1,7 +1,7 @@
 const selectedDays = {};
 
 window.onload = function () {
-  setTimezone();
+  loadTimezone();
   handleCalendar();
   handleFormSubmit();
 };
@@ -187,7 +187,7 @@ function sortDates() {
   return Object.fromEntries(sortedSelectedDays);
 }
 
-function setTimezone() {
+function loadTimezone() {
   const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const timezoneSelect = document.getElementById("timezone");
   for (let i = 0; i < timezoneSelect.options.length; i++) {
