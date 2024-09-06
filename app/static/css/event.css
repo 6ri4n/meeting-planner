@@ -22,10 +22,8 @@
   height: 40px;
 }
 
-#available-times,
-#display-times,
-.available-time-col {
-  width: fit-content;
+#display-times {
+  font-size: small;
 }
 
 #available,
