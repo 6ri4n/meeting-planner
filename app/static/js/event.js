@@ -4,14 +4,60 @@ const participantsElement = document.getElementById("participants");
 const participants = JSON.parse(participantsElement.textContent);
 const renderGrid = handleGrid();
 const { select, setSelection } = selectionState();
+const { getTimezone, setTimezone } = timezoneState();
 const eventId = window.location.pathname.substring(1);
 const debouncedHandleUpdateReq = debounce(handleUpdateReq, 3000);
 let user = undefined;
 
 window.onload = function () {
   renderGrid("view-main-content");
+  loadTimezone();
   handleSignIn();
 };
+
+function loadTimezone() {
+  const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const timezoneSelect = document.getElementById("timezone");
+  for (let i = 0; i < timezoneSelect.options.length; i++) {
+    if (timezoneSelect.options[i].value === userTimezone) {
+      timezoneSelect.selectedIndex = i;
+      setTimezone(timezoneSelect.value);
+      updateDisplayTime(getTimezone());
+      break;
+    }
+  }
+
+  timezoneSelect.addEventListener("change", () => {
+    setTimezone(timezoneSelect.value);
+    updateDisplayTime(getTimezone());
+  });
+}
+
+function updateDisplayTime(selectedTimezone) {
+  const displayTimes = document.querySelectorAll(`#display-times div`);
+
+  for (let i = 0; i <= displayTimes.length - 1; i++) {
+    const val = convertUTCToTimeZone(
+      meeting.times[i % 3],
+      selectedTimezone
+    ).split(", ")[1];
+    displayTimes[i].textContent = val;
+  }
+
+  function convertUTCToTimeZone(utcTimeString, timeZone) {
+    // Get the current date and append the UTC time
+    const currentDate = new Date().toISOString().split("T")[0]; // Get current date in YYYY-MM-DD format
+    const utcDateString = `${currentDate}T${utcTimeString}:00Z`; // Construct full UTC date-time string
+
+    // Convert to the specified time zone
+    const utcDate = new Date(utcDateString);
+    return new Intl.DateTimeFormat("en-US", {
+      timeZone,
+      dateStyle: "short",
+      timeStyle: "short",
+    }).format(utcDate);
+  }
+}
 
 function handleGrid() {
   return renderGrid;
@@ -88,7 +134,8 @@ function handleSignIn() {
       document.getElementById("signin").remove();
       renderEditHTML();
       renderGrid("edit-main-content");
-      setupListeners("#edit-main-content", handleDragSelection());
+      setupGridListeners("#edit-main-content", handleDragSelection());
+      updateDisplayTime(getTimezone());
     });
 
   function handleDragSelection() {
@@ -153,7 +200,7 @@ async function handleRequest(URL, payload) {
   }
 }
 
-function setupListeners(parent, listenersObj) {
+function setupGridListeners(parent, listenersObj) {
   document
     .querySelectorAll(`${parent} #available-times div`)
     .forEach((availableTime) => {
@@ -175,6 +222,14 @@ function selectionState() {
     }
   }
   return { select, setSelection };
+}
+
+function timezoneState() {
+  let timezone = "";
+  function setTimezone(newTimezone) {
+    timezone = newTimezone;
+  }
+  return { getTimezone: () => timezone, setTimezone };
 }
 
 function initHighlight(element, col, row) {
@@ -251,7 +306,6 @@ async function handleUpdateReq() {
 
 function debounce(cb, delay) {
   let timeout;
-
   return (...args) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => {

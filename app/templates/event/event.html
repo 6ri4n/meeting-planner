@@ -11,6 +11,13 @@
     <h1>Event View</h1>
     <div>Participants: {{ participants }}</div>
 
+    <label for="timezone">Time Zone:</label>
+    <select id="timezone" name="timezone" required>
+      {% for tz in timezones %}
+      <option value="{{ tz }}">{{ tz }}</option>
+      {% endfor %}
+    </select>
+
     <section id="main-content">
       <form id="signin" action="submit" method="post">
         <label for="username">Sign In</label>

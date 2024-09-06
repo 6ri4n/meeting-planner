@@ -30,4 +30,5 @@ def event(event_id):
             "/event/event.html",
             meeting=json.dumps(event.meeting),
             participants=event.participants,
+            timezones=common_timezones
         )
