@@ -24,6 +24,7 @@ def create_event():
             new_event = Event(
                 _id=redirect_url,
                 event_name=data["eventName"],
+                description=data["description"],
                 created_at=date.today().strftime("%m-%d-%Y"),
                 meeting={"days": data["selectedDays"], "times": available_times},
                 participants={},
@@ -34,7 +35,7 @@ def create_event():
 
             return jsonify({"redirect_url": redirect_url})
         except Exception as err:
-            return jsonify({"error": "Server Error. Please Try Again."}), 500
+            return jsonify({"error": "Server Error. Please Try Again.", "err": err}), 500
     else:
         return jsonify({"error": "Invalid Data."}), 400
 
