@@ -24,6 +24,7 @@ def create_event():
             new_event = Event(
                 _id=redirect_url,
                 event_name=data["eventName"],
+                description=data["description"],
                 created_at=date.today().strftime("%m-%d-%Y"),
                 meeting={"days": data["selectedDays"], "times": available_times},
                 participants={},
@@ -34,16 +35,16 @@ def create_event():
 
             return jsonify({"redirect_url": redirect_url})
         except Exception as err:
-            return jsonify({"error": "Server Error. Please Try Again."}), 500
+            return jsonify({"error": "Server Error. Please Try Again","details": str(err)}), 500
     else:
-        return jsonify({"error": "Invalid Data."}), 400
+        return jsonify({"error": "Invalid Data.","details": str(err)}), 400
 
 
 @api_event_bp.route("/signin", methods=["POST"])
 def signin():
     data = request.json
     if not data or not data.get("username") or not data.get("eventId"):
-        return jsonify({"error": "Invalid Data."}), 400
+        return jsonify({"error": "Invalid Data.","details": str(err)}), 400
 
     try:
         username = data["username"]
@@ -52,7 +53,7 @@ def signin():
         # Find the event by ID
         event = Event.query.get(event_id)
         if not event:
-            return jsonify({"error": "Event not found."}), 404
+            return jsonify({"error": "Event not found.","details": str(err)}), 404
 
         # Handles participants data
         if isinstance(event.participants, str):
@@ -96,7 +97,7 @@ def update():
         # Finds the event by ID
         event = Event.query.get(event_id)
         if not event:
-            return jsonify({"error": "Event not found."}), 404
+            return jsonify({"error": "Event not found.","details": str(err)}), 404
 
         # Handles participants data
         if isinstance(event.participants, str):
@@ -106,7 +107,7 @@ def update():
 
         # Checks if the user is part of the event's participants
         if username not in update_participants:
-            return jsonify({"error": "User not found in this event."}), 404
+            return jsonify({"error": "User not found in this event.","details": str(err)}), 404
 
         # Update the user's data with the new selected times (overwrite old data)
         update_participants[username] = selected_times
