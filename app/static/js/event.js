@@ -101,13 +101,57 @@ function handleGrid() {
         if (parentEle === "edit-main-content") {
           container.appendChild(initHighlight(availableTime, col, row));
         } else if (parentEle === "view-main-content") {
-          // TODO: handle view-main-content
-          container.appendChild(availableTime);
+          container.appendChild(
+            handleDisplayAvailability(availableTime, col, row)
+          );
         }
       }
       availTimes.appendChild(container);
     }
   }
+}
+
+function updateDisplayAvailability() {
+  const allAvailableTimes = document.querySelectorAll(
+    "#view-main-content .available-time-col .available-time"
+  );
+  for (const time of allAvailableTimes) {
+    time.classList = "available-time";
+    const col = time.getAttribute("data-col");
+    const row = time.getAttribute("data-row");
+    handleDisplayAvailability(time, col, row);
+  }
+}
+
+function handleDisplayAvailability(availableTime, curCol, curRow) {
+  const totalParticipants = Object.entries(participants).length;
+  let currentParticipants = 0;
+
+  for (let [_, userSelectedTimes] of Object.entries(participants)) {
+    if (
+      userSelectedTimes[availableTime.id]?.find(
+        ({ col, row }) => curCol === col && curRow === row
+      )
+    ) {
+      currentParticipants += 1;
+    }
+  }
+
+  if (totalParticipants > 0 && currentParticipants === totalParticipants) {
+    availableTime.classList.add("all-participants");
+  } else if (
+    currentParticipants >= Math.ceil(totalParticipants * 0.5) &&
+    currentParticipants < Math.ceil(totalParticipants * 0.99)
+  ) {
+    availableTime.classList.add("most-participants");
+  } else if (
+    currentParticipants >= Math.ceil(totalParticipants * 0.01) &&
+    currentParticipants < Math.ceil(totalParticipants * 0.49)
+  ) {
+    availableTime.classList.add("some-participants");
+  }
+
+  return availableTime;
 }
 
 function handleSignIn() {
@@ -262,6 +306,7 @@ function handleHighlight() {
     const end = startRowIndex + endRow - 1;
     for (let row = start; row <= end; row++) {
       updateUserData(isHighlight, times[row]);
+      updateDisplayAvailability();
     }
   }
 

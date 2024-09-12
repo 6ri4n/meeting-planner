@@ -53,5 +53,17 @@
 }
 
 .highlight-time {
-  background-color: green;
+  background-color: #5bba6f;
+}
+
+.all-participants {
+  background-color: hsl(126, 55%, 28%);
+}
+
+.most-participants {
+  background-color: hsl(128, 44%, 38%);
+}
+
+.some-participants {
+  background-color: hsl(133, 41%, 54%);
 }
