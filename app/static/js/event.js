@@ -11,6 +11,7 @@ let user = undefined;
 
 window.onload = function () {
   renderGrid("view-main-content");
+  setupGridListeners("#view-main-content", handleDisplayParticipants());
   loadTimezone();
   handleSignIn();
 };
@@ -152,6 +153,89 @@ function handleDisplayAvailability(availableTime, curCol, curRow) {
   }
 
   return availableTime;
+}
+
+function handleDisplayParticipants() {
+  return {
+    mouseover: function handleMouseEnter(event) {
+      const element = event.target;
+      const curRow = event.target.getAttribute("data-row");
+      const curCol = event.target.getAttribute("data-col");
+      const displayNumAvailable = document.querySelector(
+        "#display-participants h1"
+      );
+      const displayDate = document.querySelector("#display-participants p");
+      const displayAvailable = document.querySelector(
+        "#display-participants #available"
+      );
+      const displayUnavailable = document.querySelector(
+        "#display-participants #unavailable"
+      );
+
+      const displayParticipants = document.querySelector(
+        "#display-participants"
+      );
+      const totalParticipants = Object.entries(participants).length;
+      const divAvailable = document.createElement("div");
+      const divUnavailable = document.createElement("div");
+      let currentParticipants = 0;
+      displayAvailable.replaceChildren();
+      displayUnavailable.replaceChildren();
+      divAvailable.textContent = "Available";
+      divUnavailable.textContent = "Unavailable";
+      displayAvailable.appendChild(divAvailable);
+      displayUnavailable.appendChild(divUnavailable);
+
+      for (let [user, userSelectedTimes] of Object.entries(participants)) {
+        console.log(user);
+        const divParticipant = document.createElement("div");
+        divParticipant.textContent = user;
+
+        if (
+          userSelectedTimes[element.id]?.find(
+            ({ col, row }) => curCol === col && curRow === row
+          )
+        ) {
+          currentParticipants += 1;
+          displayAvailable.appendChild(divParticipant);
+        } else {
+          displayUnavailable.appendChild(divParticipant);
+        }
+      }
+
+      displayNumAvailable.textContent = `${currentParticipants}/${totalParticipants} Available`;
+      displayDate.textContent = formatDate(element.id);
+      displayParticipants.classList.remove("hide-display-participants");
+    },
+    mouseleave: function handleMouseLeave(_) {
+      const displayParticipants = document.querySelector(
+        "#display-participants"
+      );
+      displayParticipants.classList.add("hide-display-participants");
+    },
+  };
+
+  function formatDate(dateStr) {
+    // Split the input string into month, day, and year
+    const [month, day, year] = dateStr.split("-").map(Number);
+
+    // Create a new Date object from the extracted values
+    const date = new Date(year, month - 1, day); // month is zero-indexed in JavaScript
+
+    // Format the date using Intl.DateTimeFormat
+    const options = {
+      weekday: "short",
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    };
+
+    const formatDate = new Intl.DateTimeFormat("en-US", options).format(date);
+
+    const formatDateSplit = formatDate.split(",");
+
+    return `${formatDateSplit[0]}, ${formatDateSplit[1]} ${formatDateSplit[2]}`;
+  }
 }
 
 function handleSignIn() {
