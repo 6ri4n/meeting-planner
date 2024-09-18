@@ -1,72 +1,142 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <title>Create Event</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/create_event.css') }}"
+    />
+  </head>
 
-<head>
-  <title>Create Event</title>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/create_event.css') }}" />
-</head>
+  <body>
+    <a href="#" id="planmeets" class="container">planmeets</a>
 
-<body>
-  <form action="submit" method="post">
-    <h1>Create Event</h1>
+    <div id="create-meeting" class="container">
+      <form id="form-container" action="submit" method="post">
+        <h1>What is the meeting about?</h1>
 
-    <section class="form-fields">
-      <label for="eventName">Event Name:</label>
-      <input type="text" id="eventName" name="eventName" value="New Event Name" placeholder="New Event Name" />
+        <section class="form-fields">
+          <div>
+            <label for="eventName">
+              <img src="static/svg/meet.svg" alt="Meeting Name Icon" />
+              Meeting name
+            </label>
+            <input
+              type="text"
+              id="eventName"
+              name="eventName"
+              value=""
+              placeholder="E.g: Product Roadmapping Workshop"
+            />
+          </div>
 
-      <label for="description">Description:</label>
-      <input type="text" id="description" name="description" value="New description" placeholder="New description" />
+          <div>
+            <label for="description">
+              <img src="static/svg/desc.svg" alt="Description Icon" />
+              Description
+            </label>
+            <input
+              type="text"
+              id="description"
+              name="description"
+              value=""
+              placeholder="E.g: Workshopping session with design and engineering"
+            />
+          </div>
 
-      <label for="startTimeSelector">Start Time:</label>
-      <select id="startTimeSelector" name="startTimeSelector">
-        {% for time in times %}
-        <option value="{{ time }}">{{ time }}</option>
-        {% endfor %}
-      </select>
+          <h1>When is the meeting?</h1>
 
-      <label for="endTimeSelector">End Time:</label>
-      <select id="endTimeSelector" name="endTimeSelector">
-        {% for time in times %}
-        <option value="{{ time }}">{{ time }}</option>
-        {% endfor %}
-      </select>
+          <div>
+            <label for="timezone">
+              <img src="static/svg/timezone.svg" alt="Timezone Icon" />
+              Timezone
+            </label>
+            <select id="timezone" name="timezone" required>
+              {% for tz in timezones %}
+              <option value="{{ tz }}">{{ tz }}</option>
+              {% endfor %}
+            </select>
+          </div>
 
-      <label for="timezone">Time Zone:</label>
-      <select id="timezone" name="timezone" required>
-        {% for tz in timezones %}
-        <option value="{{ tz }}">{{ tz }}</option>
-        {% endfor %}
-      </select>
-    </section>
+          <section class="timezone-container">
+            <div>
+              <label for="startTimeSelector">
+                <img src="static/svg/start-clock.svg" alt="Start Clock Icon" />
+                Start
+              </label>
+              <select id="startTimeSelector" name="startTimeSelector">
+                {% for time in times %}
+                <option value="{{ time }}">{{ time }}</option>
+                {% endfor %}
+              </select>
+            </div>
 
-    <section class="calendar">
-      <header>
-        <h1></h1>
-        <nav class="calendar-nav">
-          <button id="prev">Prev</button>
-          <button id="next">Next</button>
-        </nav>
-      </header>
+            <div id="to">to</div>
 
-      <div class="month">
-        <ul class="week">
-          <li>Sun</li>
-          <li>Mon</li>
-          <li>Tue</li>
-          <li>Wed</li>
-          <li>Thu</li>
-          <li>Fri</li>
-          <li>Sat</li>
-        </ul>
-        <ul class="day"></ul>
+            <div>
+              <label for="endTimeSelector">
+                <img src="static/svg/end-clock.svg" alt="End Clock Icon" />
+                End
+              </label>
+              <select id="endTimeSelector" name="endTimeSelector">
+                {% for time in times %}
+                <option value="{{ time }}">{{ time }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </section>
+        </section>
+
+        <button id="submit" type="submit">Submit</button>
+        <button id="cancel" type="button">Cancel</button>
+      </form>
+
+      <div class="calendar-container">
+        <h1>When are you available?</h1>
+        <section class="calendar">
+          <header>
+            <div>
+              <img src="static/svg/calendar.svg" alt="Calendar Icon" />
+              <span></span>
+            </div>
+            <nav class="calendar-nav">
+              <button id="prev">
+                <img
+                  src="static/svg/left-arrow.svg"
+                  alt="Previous Button Icon"
+                />
+              </button>
+              <button id="next">
+                <img src="static/svg/right-arrow.svg" alt="Next Button Icon" />
+              </button>
+            </nav>
+          </header>
+
+          <div class="month">
+            <ul class="week">
+              <li>Sun</li>
+              <li>Mon</li>
+              <li>Tue</li>
+              <li>Wed</li>
+              <li>Thu</li>
+              <li>Fri</li>
+              <li>Sat</li>
+            </ul>
+            <ul class="day"></ul>
+          </div>
+        </section>
       </div>
-    </section>
+    </div>
 
-    <button>Submit</button>
-  </form>
-
-  <script defer src="{{ url_for('static', filename='js/create.js') }}"></script>
-</body>
+    <script
+      defer
+      src="{{ url_for('static', filename='js/create.js') }}"
+    ></script>
+  </body>
 </html>

@@ -1,6 +1,24 @@
+:root {
+  --primary-color: #000000;
+  --secondary-color: #5c656e;
+  --accent-color: #3c4bd3;
+  --border-color: #dddddd;
+  --background-color: #ffffff;
+}
+
 * {
   margin: 0;
   padding: 0;
+}
+
+a {
+  text-decoration: none;
+  display: block;
+}
+
+body {
+  font-family: "DM Sans", sans-serif;
+  font-size: 20px;
 }
 
 button {
@@ -21,12 +39,17 @@ ul {
   text-align: center;
 }
 
-.calendar {
-  width: 50%;
+h1 {
+  font-size: 28px;
+  font-weight: 700;
 }
 
-.month, .calendar header {
-  width: 100%;
+label img,
+.calendar-nav button img,
+.calendar div img {
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
 }
 
 .day li,
@@ -35,20 +58,22 @@ ul {
 }
 
 .day li.not-current-month {
-  color: pink;
+  color: var(--secondary-color);
 }
 
 .day li.current-month {
-  color: purple;
+  color: var(--primary-color);
 }
 
 .day li.selected-day {
-  font-weight: bold;
+  font-weight: 900;
+  color: var(--accent-color);
 }
 
 .day li:not(.not-current-month):hover {
-  font-weight: bold;
+  font-weight: 900;
   cursor: pointer;
+  color: var(--accent-color);
 }
 
 .calendar header {
@@ -60,15 +85,178 @@ ul {
   display: flex;
 }
 
-.calendar-nav button {
-  padding: 0.5rem;
-  border: solid black 1px;
-  border-radius: 8px;
-  margin: 0 0 0 10px;
-}
-
-header h1 {
+.calendar header h1 {
   display: flex;
   justify-content: center;
   align-items: center;
+  color: var(--secondary-color);
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.form-fields label,
+.calendar header div {
+  display: flex;
+  align-items: center;
+}
+
+.calendar-nav button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.timezone-container {
+  display: flex;
+}
+
+.timezone-container div {
+  flex-grow: 1;
+}
+
+.day li,
+.week li {
+  padding: 1rem 0 1rem 0;
+}
+
+#submit {
+  font-size: 20px;
+  background-color: var(--accent-color);
+  color: var(--background-color);
+  padding: 16px;
+  border-radius: 4px;
+}
+
+#cancel {
+  font-size: 20px;
+  background-color: var(--background-color);
+  color: var(--accent-color);
+  padding: 16px;
+  border: 1px solid var(--accent-color);
+  border-radius: 4px;
+}
+
+#to {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--secondary-color);
+}
+
+#form-container div,
+#form-container button,
+#planmeets,
+.calendar header {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+#create-meeting {
+  margin-top: 2.5rem;
+  margin-bottom: 2.5rem;
+}
+
+#form-container {
+  display: flex;
+  flex-direction: column;
+}
+
+#planmeets {
+  font-size: 40px;
+  font-weight: 900;
+  color: var(--accent-color);
+}
+
+input {
+  background-color: var(--background-color);
+  border: 1px solid var(--border-color);
+  color: var(--secondary-color);
+  border-radius: 1px;
+  padding: 8px;
+  font-size: 16px;
+  width: 100%;
+  margin-top: 0.5rem;
+  box-sizing: border-box;
+}
+
+input[type="text"] {
+  color: var(--secondary-color);
+}
+
+select {
+  background-color: var(--background-color);
+  border: 1px solid var(--border-color);
+  color: var(--secondary-color);
+  border-radius: 1px;
+  padding: 8px;
+  font-size: 16px;
+  width: 100%;
+  margin-top: 0.5rem;
+  box-sizing: border-box;
+}
+
+select option {
+  color: var(--secondary-color);
+  padding: 10px;
+  font-size: 16px;
+}
+
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+/* xs */
+@media (min-width: 475px) {
+  .container {
+    max-width: 475px;
+  }
+
+  #create-meeting {
+    display: block;
+  }
+}
+
+/* sm */
+@media (min-width: 640px) {
+  .container {
+    max-width: 640px;
+  }
+}
+
+/* md */
+@media (min-width: 768px) {
+  .container {
+    max-width: 768px;
+  }
+}
+
+/* lg */
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1024px;
+  }
+
+  #create-meeting {
+    display: flex;
+  }
+
+  #form-container {
+    width: 35%;
+    margin-right: 4rem;
+  }
+
+  .calendar-container {
+    width: 65%;
+  }
+}
+
+/* xl */
+@media (min-width: 1280px) {
+  .container {
+    max-width: 1280px;
+  }
 }
