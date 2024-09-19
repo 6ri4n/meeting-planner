@@ -108,7 +108,7 @@ function handleCalendar() {
   }
 
   function handleCalendarNav() {
-    document.querySelectorAll(".calendar-nav").forEach((btn) => {
+    document.querySelectorAll(".calendar-nav button").forEach((btn) => {
       btn.addEventListener("click", (e) => {
         e.preventDefault();
 

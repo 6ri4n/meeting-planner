@@ -45,11 +45,15 @@ h1 {
 }
 
 label img,
-.calendar-nav button img,
 .calendar div img {
   width: 24px;
   height: 24px;
   margin-right: 8px;
+}
+
+.calendar-nav button img {
+  width: 24px;
+  height: 24px;
 }
 
 .day li,
@@ -117,6 +121,10 @@ label img,
 .day li,
 .week li {
   padding: 1rem 0 1rem 0;
+}
+
+.calendar-nav button:first-child {
+  margin-right: 8px;
 }
 
 #submit {
