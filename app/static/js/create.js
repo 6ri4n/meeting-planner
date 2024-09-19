@@ -4,6 +4,10 @@ window.onload = function () {
   loadTimezone();
   handleCalendar();
   handleFormSubmit();
+  document.getElementById("eventName").value = "";
+  document.getElementById("description").value = "";
+  document.getElementById("startTimeSelector").selectedIndex = 0;
+  document.getElementById("endTimeSelector").selectedIndex = 0;
 };
 
 function handleCalendar() {
@@ -23,7 +27,7 @@ function handleCalendar() {
   };
   const maxSelections = 14;
   const dayParentElement = document.querySelector(".day");
-  const headerElement = document.querySelector(".calendar header h1");
+  const headerElement = document.querySelector(".calendar header span");
   let date = new Date();
   let year = date.getFullYear();
   let month = date.getMonth() + 1;
@@ -104,7 +108,7 @@ function handleCalendar() {
   }
 
   function handleCalendarNav() {
-    document.querySelectorAll(".calendar-nav").forEach((btn) => {
+    document.querySelectorAll(".calendar-nav button").forEach((btn) => {
       btn.addEventListener("click", (e) => {
         e.preventDefault();
 
@@ -136,11 +140,14 @@ function handleCalendar() {
 function handleFormSubmit() {
   document.querySelector("form").addEventListener("submit", async (event) => {
     event.preventDefault();
-    const eventName = document.getElementById("eventName");
-    if (eventName.value === "") return alert("Event name cannot be empty.");
     if (Object.entries(selectedDays).length === 0)
-      return alert("Event days cannot be empty.");
+      return alert("Meeting days cannot be empty.");
     handleRequest(event);
+  });
+
+  document.querySelector("#cancel").addEventListener("click", (event) => {
+    event.preventDefault();
+    window.location.reload();
   });
 }
 

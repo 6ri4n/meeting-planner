@@ -36,13 +36,14 @@ function loadTimezone() {
 
 function updateDisplayTime(selectedTimezone) {
   const displayTimes = document.querySelectorAll(`#display-times div`);
-
-  for (let i = 0; i <= displayTimes.length - 1; i++) {
-    const val = convertUTCToTimeZone(
-      meeting.times[i % 3],
-      selectedTimezone
-    ).split(", ")[1];
+  for (let i = 0; i <= meeting.times.length - 1; i++) {
+    const val = convertUTCToTimeZone(meeting.times[i], selectedTimezone).split(
+      ", "
+    )[1];
     displayTimes[i].textContent = val;
+    if (user) {
+      displayTimes[i + meeting.times.length].textContent = val;
+    }
   }
 
   function convertUTCToTimeZone(utcTimeString, timeZone) {
