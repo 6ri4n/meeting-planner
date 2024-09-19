@@ -15,7 +15,7 @@ def event_home():
     )
 
 
-@event_bp.route("/create")
+@event_bp.route("/plan")
 def create_event():
     return render_template(
         "/event/create.html", timezones=common_timezones, times=time_format
