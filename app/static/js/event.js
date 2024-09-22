@@ -315,7 +315,7 @@ function handleSignIn() {
 
 async function handleRequest(URL, payload) {
   try {
-    const response = await fetch(`http://localhost:5000/api${URL}`, {
+    const response = await fetch(`https://planmeets.com/api${URL}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
