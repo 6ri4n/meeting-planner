@@ -188,7 +188,6 @@ function handleDisplayParticipants() {
       displayUnavailable.appendChild(divUnavailable);
 
       for (let [user, userSelectedTimes] of Object.entries(participants)) {
-        console.log(user);
         const divParticipant = document.createElement("div");
         divParticipant.textContent = user;
 
@@ -315,7 +314,7 @@ function handleSignIn() {
 
 async function handleRequest(URL, payload) {
   try {
-    const response = await fetch(`https://planmeets.com/api${URL}`, {
+    const response = await fetch(`/api${URL}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
