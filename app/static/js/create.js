@@ -152,7 +152,7 @@ function handleFormSubmit() {
 }
 
 async function handleRequest(event) {
-  const URL = "http://localhost:5000/api/event/create";
+  const URL = "/api/event/create"
   const formData = new FormData(event.target);
   const sortedSelectedDays = sortDates();
   const formObj = {};

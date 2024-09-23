@@ -9,13 +9,6 @@ event_bp = Blueprint("event_bp", __name__)
 
 
 @event_bp.route("/")
-def event_home():
-    return render_template(
-        "/event/index.html", title="Event Home", message="Event Home"
-    )
-
-
-@event_bp.route("/plan")
 def create_event():
     return render_template(
         "/event/create.html", timezones=common_timezones, times=time_format
@@ -32,5 +25,7 @@ def event(event_id):
             participants=event.participants,
             description=event.description,
             event_name=event.event_name,
-            timezones=common_timezones
+            timezones=common_timezones,
         )
+    else:
+        return render_template("/event/error.html")

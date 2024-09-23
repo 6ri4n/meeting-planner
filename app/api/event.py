@@ -3,8 +3,9 @@ import json
 import uuid
 from datetime import date, datetime
 
-from pytz import timezone as pytimezone, utc
 from flask import Blueprint, jsonify, request
+from pytz import timezone as pytimezone
+from pytz import utc
 
 from ..models import Event, db
 
@@ -122,7 +123,6 @@ def update():
     except Exception as err:
         # Return error with details
         return jsonify({"error": "Server Error.", "details": str(err)}), 500
-
 
 def generate_base64_uuid():
     u = uuid.uuid4()
