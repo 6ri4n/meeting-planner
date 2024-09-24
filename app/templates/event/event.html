@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Event View</title>
+    <title>Meeting</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700;900&display=swap"
+      rel="stylesheet"
+    />
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/event.css') }}"
@@ -11,49 +15,92 @@
   </head>
   <body>
     <a href="/" id="planmeets" class="container">planmeets</a>
-    <h1>Event View</h1>
-    <div>Participants: {{ participants }}</div>
-    <div>Event name: {{ event_name }}</div>
-    <div>Description: {{ description }}</div>
 
-    <label for="timezone">Time Zone:</label>
-    <select id="timezone" name="timezone" required>
-      {% for tz in timezones %}
-      <option value="{{ tz }}">{{ tz }}</option>
-      {% endfor %}
-    </select>
+    <section class="container meeting-info-container">
+      <div>
+        <div>
+          <img src="static/svg/meet.svg" alt="Meeting Name Icon" />
+          Meeting name
+        </div>
+        <div>{{ event_name }}</div>
+      </div>
 
-    <section id="main-content">
-      <form id="signin" action="submit" method="post">
-        <label for="username">Sign In</label>
+      <div>
+        <div>
+          <img src="static/svg/desc.svg" alt="Description Icon" />
+          Description
+        </div>
+        <div>{{ description }}</div>
+      </div>
+
+      <div class="meeting-info-timezone">
+        <label for="timezone">
+          <img src="static/svg/timezone.svg" alt="Timezone Icon" />
+          Timezone
+        </label>
+        <select id="timezone" name="timezone" required>
+          {% for tz in timezones %}
+          <option value="{{ tz }}">{{ tz }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </section>
+
+    <form id="signin" class="container" action="submit" method="post">
+      <label for="username">
+        <img src="static/svg/profile.svg" alt="Profile Icon" />
+        Username
+      </label>
+      <div>
         <input
           type="text"
           id="username"
           name="username"
-          placeholder="username"
+          placeholder="E.g: Christopher"
         />
         <button>Sign In</button>
-        <p>Username is only for this event.</p>
-        <p>Returning? Use the same username.</p>
-      </form>
+      </div>
+      <p>Username is only for this meeting.</p>
+      <p>Returning? Use the same username.</p>
+    </form>
 
-      <section id="view-main-content">
-        <div id="available-days">
-          <div class="filler"></div>
-        </div>
-        <div id="time-container">
-          <div id="display-times"></div>
-          <div id="available-times"></div>
-        </div>
-      </section>
-    </section>
+    <section id="main-content" class="container">
+      <div id="everyone-availability">
+        <section id="view-main-content">
+          <div>
+            <h1>
+              <img src="static/svg/calendar.svg" alt="Calendar Icon" />
+              Everyone's Availability
+              <div class="legend">
+                <div class="legend-key" style="background-color: #949ce7">
+                  Some
+                </div>
+                <div class="legend-key" style="background-color: #636fdc">
+                  Most
+                </div>
+                <div class="legend-key" style="background-color: #3c4bd3">
+                  All
+                </div>
+              </div>
+            </h1>
+            <div id="available-days">
+              <div class="filler"></div>
+            </div>
+            <div id="time-container">
+              <div id="display-times"></div>
+              <div id="available-times"></div>
+            </div>
+          </div>
+        </section>
 
-    <section id="display-participants">
-      <h1></h1>
-      <p></p>
-      <div>
-        <div id="available"></div>
-        <div id="unavailable"></div>
+        <section id="display-participants">
+          <h1></h1>
+          <p></p>
+          <div>
+            <div id="available"></div>
+            <div id="unavailable"></div>
+          </div>
+        </section>
       </div>
     </section>
 
