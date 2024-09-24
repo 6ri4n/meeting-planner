@@ -182,8 +182,8 @@ function handleDisplayParticipants() {
       let currentParticipants = 0;
       displayAvailable.replaceChildren();
       displayUnavailable.replaceChildren();
-      divAvailable.textContent = "Available";
-      divUnavailable.textContent = "Unavailable";
+      divAvailable.textContent = "available";
+      divUnavailable.textContent = "unavailable";
       displayAvailable.appendChild(divAvailable);
       displayUnavailable.appendChild(divUnavailable);
 
@@ -245,6 +245,7 @@ function handleSignIn() {
       event.preventDefault();
       const username = document.getElementById("username");
       if (username.value === "") return alert("Username cannot be empty.");
+      if (username.value.length >= 21) return alert("Username cannot be over 20 characters.");
 
       let response = await handleRequest("/event/signin", {
         eventId,
@@ -286,6 +287,15 @@ function handleSignIn() {
   }
 
   function renderEditHTML() {
+    const divContainer = document.createElement("div");
+    const header = document.createElement("h1");
+    const img = document.createElement("img");
+    const text = document.createTextNode("My Availability");
+    img.src = "static/svg/calendar.svg";
+    img.alt = "Calendar Icon";
+    header.appendChild(img);
+    header.appendChild(text);
+
     const availableDays = document.createElement("div");
     availableDays.id = "available-days";
     const filler = document.createElement("div");
@@ -303,11 +313,13 @@ function handleSignIn() {
 
     const section = document.createElement("section");
     section.id = "edit-main-content";
-    section.appendChild(availableDays);
-    section.appendChild(timeContainer);
+    divContainer.appendChild(header);
+    divContainer.appendChild(availableDays);
+    divContainer.appendChild(timeContainer);
+    section.appendChild(divContainer);
 
     const mainContent = document.getElementById("main-content");
-    const viewMainContent = document.getElementById("view-main-content");
+    const viewMainContent = document.getElementById("everyone-availability");
     mainContent.insertBefore(section, viewMainContent);
   }
 }

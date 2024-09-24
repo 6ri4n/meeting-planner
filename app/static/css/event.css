@@ -1,29 +1,80 @@
+:root {
+  --primary-color: #000000;
+  --secondary-color: #5c656e;
+  --accent-color: #3c4bd3;
+  --border-color: #dddddd;
+  --background-color: #ffffff;
+}
+
 * {
   margin: 0;
+  padding: 0;
+}
+
+a {
+  text-decoration: none;
+  display: block;
+}
+
+body {
+  font-family: "DM Sans", sans-serif;
+  font-size: 20px;
+}
+
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  outline: none;
+}
+
+button:focus {
+  outline: none;
+}
+
+h1 {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+#planmeets {
+  font-size: 40px;
+  font-weight: 900;
+  color: var(--accent-color);
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 #display-participants div,
 #main-content,
 #time-container,
 #view-main-content,
+#edit-main-content,
 #available-days,
 .available-day,
-#display-times,
 #display-times div,
 .available-time-col,
 #available-times {
   display: flex;
 }
 
-.filler,
-.available-day,
-#display-times div {
-  width: 60px;
-  height: 40px;
+#display-times div,
+.filler {
+  width: 80px;
+  height: 30px;
 }
 
-#display-times {
-  font-size: small;
+.available-day {
+  width: 55px;
+  height: fit-content;
+}
+
+.available-time {
+  box-sizing: border-box;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+  width: 55px;
+  height: 30px;
 }
 
 #available,
@@ -31,21 +82,13 @@
 #view-main-content,
 .available-day,
 #display-times,
-.available-time-col {
+.available-time-col,
+#main-content {
   flex-direction: column;
 }
 
-#display-times div,
-.available-day {
-  justify-content: center;
+#display-times div {
   align-items: center;
-}
-
-.available-time {
-  border-right: 1px solid black;
-  border-bottom: 1px solid black;
-  width: 59px;
-  height: 39px;
 }
 
 .hide-display-participants {
@@ -53,17 +96,325 @@
 }
 
 .highlight-time {
-  background-color: #5bba6f;
+  background-color: #949ce7;
 }
 
 .all-participants {
-  background-color: hsl(126, 55%, 28%);
+  background-color: var(--accent-color);
 }
 
 .most-participants {
-  background-color: hsl(128, 44%, 38%);
+  background-color: #636fdc;
 }
 
 .some-participants {
-  background-color: hsl(133, 41%, 54%);
+  background-color: #949ce7;
+}
+
+img {
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+}
+
+.meeting-info-container div div,
+.meeting-info-timezone label,
+#signin label,
+#edit-main-content div h1 {
+  display: flex;
+  align-items: center;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.meeting-info-container,
+#main-content,
+#signin {
+  margin-top: 2.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.meeting-info-container div:nth-child(1) div:last-child,
+.meeting-info-container div:nth-child(2) div:last-child {
+  color: var(--secondary-color);
+}
+
+#view-main-content #available-days .available-day div,
+#edit-main-content #available-days .available-day div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 6px;
+}
+
+#display-times div {
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.available-day div:last-child {
+  color: var(--secondary-color);
+}
+
+#signin button {
+  font-size: 16px;
+  background-color: var(--accent-color);
+  color: var(--background-color);
+  padding: 8px;
+  border-radius: 4px;
+  width: 200px;
+}
+
+#signin div {
+  display: flex;
+  height: 40px;
+}
+
+#signin p {
+  color: var(--secondary-color);
+  font-size: 14px;
+}
+
+#main-content section {
+  margin-bottom: 2.5rem;
+}
+
+#main-content section div h1,
+#display-participants h1 {
+  font-size: 20px;
+  font-weight: 400;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+#display-participants #available div,
+#display-participants #unavailable div {
+  margin-top: 2px;
+  margin-bottom: 2px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+#display-participants div div:first-child {
+  margin-right: 1rem;
+}
+
+#display-participants p,
+#available div:first-child,
+#unavailable div:first-child {
+  color: var(--secondary-color);
+}
+
+#edit-main-content #available-times div div {
+  cursor: grab;
+}
+
+#edit-main-content div {
+  width: 100%;
+}
+
+#main-content div {
+  width: 100%;
+}
+
+#view-main-content {
+  width: 100%;
+}
+
+#display-times {
+  min-width: 55px;
+  max-width: 55px;
+}
+
+.filler {
+  min-width: 55px;
+  max-width: 55px;
+  height: fit-content;
+}
+
+#available-days {
+  height: fit-content;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+#view-main-content div h1 {
+  white-space: nowrap;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.legend {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  font-size: 14px;
+}
+
+.legend div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--background-color);
+}
+
+.legend-key {
+  padding: 4px;
+  max-width: 2.5rem;
+  max-height: 2.5rem;
+  border-radius: 4px;
+}
+
+input {
+  background-color: var(--background-color);
+  border: 1px solid var(--border-color);
+  color: var(--secondary-color);
+  border-radius: 1px;
+  padding: 8px;
+  font-size: 16px;
+  width: 200px;
+  box-sizing: border-box;
+}
+
+input[type="text"] {
+  color: var(--secondary-color);
+}
+
+select {
+  background-color: var(--background-color);
+  border: 1px solid var(--border-color);
+  color: var(--secondary-color);
+  border-radius: 1px;
+  padding: 8px;
+  font-size: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+select option {
+  color: var(--secondary-color);
+  padding: 10px;
+  font-size: 16px;
+}
+
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  /* border: 1px solid red; */
+}
+
+/* xs */
+@media (min-width: 475px) {
+  .container {
+    max-width: 475px;
+  }
+
+  #view-main-content #available-days .available-day div,
+  #edit-main-content #available-days .available-day div {
+    font-size: 8px;
+  }
+}
+
+/* sm */
+@media (min-width: 640px) {
+  .container {
+    max-width: 640px;
+  }
+
+  #display-times div {
+    font-size: 14px;
+  }
+
+  #display-times {
+    min-width: 80px;
+    max-width: 80px;
+  }
+
+  .filler {
+    min-width: 80px;
+    max-width: 80px;
+  }
+
+  #view-main-content #available-days .available-day div,
+  #edit-main-content #available-days .available-day div {
+    font-size: 12px;
+  }
+}
+
+/* md */
+@media (min-width: 768px) {
+  .container {
+    max-width: 768px;
+  }
+
+  #display-times div {
+    font-size: 16px;
+  }
+
+  #edit-main-content #available-days .available-day div {
+    font-size: 14px;
+  }
+}
+
+/* lg */
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1024px;
+  }
+
+  .meeting-info-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .meeting-info-container div:nth-child(1) div:last-child {
+    width: 300px;
+  }
+
+  .meeting-info-container div:nth-child(2) div:last-child {
+    width: 400px;
+  }
+
+  #view-main-content #available-days .available-day div {
+    font-size: 12px;
+  }
+
+  #view-main-content {
+    margin-right: 2rem;
+    width: 100%;
+  }
+
+  #display-participants {
+    /* flex-grow: 1; */
+    width: 100%;
+  }
+
+  #everyone-availability {
+    display: flex;
+  }
+
+  #view-main-content {
+    min-width: 70%;
+    max-width: 70%;
+  }
+}
+
+/* xl */
+@media (min-width: 1280px) {
+  .container {
+    max-width: 1280px;
+  }
+
+  .meeting-info-container div:nth-child(1) div:last-child {
+    width: 400px;
+  }
+
+  .meeting-info-container div:nth-child(2) div:last-child {
+    width: 500px;
+  }
 }
