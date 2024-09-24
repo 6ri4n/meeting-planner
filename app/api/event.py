@@ -17,6 +17,11 @@ def create_event():
     data = request.json
     if data:
         try:
+            if len(data["eventName"]) >= 61:
+                return jsonify({"error": "Meeting name cannot be over 60 characters."}), 400
+            if len(data["description"]) >= 256:
+                return jsonify({"error": "Meeting description cannot be over 255 characters."}), 400
+
             redirect_url = generate_base64_uuid()
             start_time_utc = convert_to_utc(data["startTimeSelector"], data["timezone"])
             end_time_utc = convert_to_utc(data["endTimeSelector"], data["timezone"])
@@ -50,6 +55,9 @@ def signin():
     try:
         username = data["username"]
         event_id = data["eventId"]
+
+        if len(username) >= 21:
+            return jsonify({"error": "Username cannot be over 20 characters."}), 400
 
         # Find the event by ID
         event = Event.query.get(event_id)
