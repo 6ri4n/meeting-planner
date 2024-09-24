@@ -245,6 +245,7 @@ function handleSignIn() {
       event.preventDefault();
       const username = document.getElementById("username");
       if (username.value === "") return alert("Username cannot be empty.");
+      if (username.value.length >= 21) return alert("Username cannot be over 20 characters.");
 
       let response = await handleRequest("/event/signin", {
         eventId,
@@ -289,7 +290,7 @@ function handleSignIn() {
     const divContainer = document.createElement("div");
     const header = document.createElement("h1");
     const img = document.createElement("img");
-    const text = document.createTextNode("Everyone's Availability");
+    const text = document.createTextNode("My Availability");
     img.src = "static/svg/calendar.svg";
     img.alt = "Calendar Icon";
     header.appendChild(img);

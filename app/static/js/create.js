@@ -142,6 +142,10 @@ function handleFormSubmit() {
     event.preventDefault();
     if (Object.entries(selectedDays).length === 0)
       return alert("Meeting days cannot be empty.");
+    if (event.srcElement[0].value.length >= 61)
+      return alert("Meeting name cannot be over 60 characters.");
+    if (event.srcElement[1].value.length >= 256)
+      return alert("Meeting description cannot be over 255 characters.");
     handleRequest(event);
   });
 
@@ -152,7 +156,7 @@ function handleFormSubmit() {
 }
 
 async function handleRequest(event) {
-  const URL = "/api/event/create"
+  const URL = "/api/event/create";
   const formData = new FormData(event.target);
   const sortedSelectedDays = sortDates();
   const formObj = {};
