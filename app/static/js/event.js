@@ -249,7 +249,6 @@ function handleSignIn() {
 
       let response = await handleRequest("/event/signin", {
         eventId,
-        eventId,
         username: username.value,
       });
 
