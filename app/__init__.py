@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_compress import Compress
 from flask_cors import CORS
 
 
@@ -7,6 +8,7 @@ def create_app():
     from .models import db
 
     app = Flask(__name__)
+    Compress(app)
     CORS(app)
     app.config.from_object(Config)
     db.init_app(app)
